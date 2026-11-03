@@ -576,6 +576,10 @@ $('#help').addEventListener('click', () => showOnboarding(0));
 
 // ---- boot ---------------------------------------------------------------------
 
+// iOS Safari ignores user-scalable=no: block its page pinch-zoom (the canvas has its own zoom).
+for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
+document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+
 buildTray();
 updateHud();
 drawTimer();

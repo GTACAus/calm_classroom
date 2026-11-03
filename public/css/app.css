@@ -26,7 +26,10 @@ body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
+/* touch-action stops double-tap zoom; 16px form text stops iOS zooming in on focus. */
+html, body { touch-action: manipulation; }
 button, select, input { font: inherit; color: inherit; touch-action: manipulation; }
+select, input { font-size: 16px !important; }
 
 /* ---- header ---- */
 .top {
