@@ -4,7 +4,7 @@
     {
       "name": "nfspace",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["server.py", "--port", "8765"],
+      "runtimeArgs": ["C:/Users/dgoddard/Documents/GitHub/calm_classroom/server.py", "--port", "8765"],
       "port": 8765
     }
   ]

@@ -180,6 +180,20 @@ summary { cursor: pointer; font-weight: 700; color: var(--cobalt-blue); min-heig
 .gb { text-align: left; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: flex; flex-direction: column; gap: 2px; min-height: 80px; }
 .gb small { opacity: .6; }
 
+/* ---- onboarding ---- */
+.sheet.onboard { width: min(600px, 100%); text-align: center; padding: 28px 24px 20px; }
+.ob-icon { font-size: 3.2rem; line-height: 1; }
+.onboard h2 { border: 0; padding: 0; margin: 10px 0 8px; color: var(--cobalt-blue); font-size: 1.6rem; }
+.onboard p { font-size: 1.05rem; line-height: 1.45; margin: 8px auto; max-width: 30em; }
+.ob-list { list-style: none; padding: 0; margin: 12px auto; text-align: left; max-width: 26em; }
+.ob-list li { display: flex; gap: 12px; align-items: center; padding: 8px 10px; margin-bottom: 6px; background: #fff; border-radius: 12px; font-size: 1rem; }
+.ob-list li > .i { flex: none; min-width: 2.4em; text-align: center; font-size: 1.3rem; }
+.ob-dots { display: flex; justify-content: center; gap: 8px; margin: 14px 0; }
+.ob-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.ob-dots i.on { background: var(--cobalt-blue); }
+.ob-nav { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.round.small { width: var(--touch); height: var(--touch); font-size: 1.2rem; }
+
 #toast {
   position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 20;
   background: var(--onyx); color: var(--eggshell); padding: 12px 18px; border-radius: 12px; font-weight: 700;

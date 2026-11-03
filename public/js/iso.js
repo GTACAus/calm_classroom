@@ -61,13 +61,14 @@ export function unproject(cam, sx, sy) {
   return { x: (a + b) / 2, y: (b - a) / 2 };
 }
 
-// Fit the whole room (with walls) into a w×h viewport.
-export function fitCamera(room, view, w, h) {
+// Fit the whole room (with walls) into a w×h viewport, leaving `top`/`bottom` px for overlays.
+export function fitCamera(room, view, w, h, top = 0, bottom = 0) {
   const { vc, vr } = viewDims(room, view);
   const worldW = (vc + vr) * TW / 2, worldH = (vc + vr) * TH / 2 + WALL_H;
-  const zoom = Math.min(w / (worldW + 80), h / (worldH + 80));
+  const ah = Math.max(120, h - top - bottom);
+  const zoom = Math.min(3, (w - 24) / worldW, (ah - 16) / worldH);
   const ox = w / 2 - ((vc - vr) * TW / 4) * zoom;
-  const oy = h / 2 - ((vc + vr) * TH / 4) * zoom + (WALL_H / 2) * zoom;
+  const oy = top + ah / 2 - ((vc + vr) * TH / 4) * zoom + (WALL_H / 2) * zoom;
   return { ox, oy, zoom };
 }
 

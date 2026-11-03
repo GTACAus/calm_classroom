@@ -32,6 +32,7 @@
       <button id="start" class="btn">Start 10 min</button>
     </div>
     <button id="release" class="btn primary">Release students 🚪</button>
+    <button id="help" class="round small" aria-label="How to play">?</button>
   </header>
 
   <main class="layout">
@@ -92,6 +93,18 @@
     <div class="sheet">
       <div class="sheet-head"><h2>Saved builds</h2><button id="close-gallery" class="btn">Close</button></div>
       <div id="gallery-list"></div>
+    </div>
+  </div>
+
+  <div id="onboard" class="modal" hidden>
+    <div class="sheet onboard">
+      <div id="ob-step"></div>
+      <div class="ob-dots" id="ob-dots"></div>
+      <div class="ob-nav">
+        <button id="ob-back" class="btn">Back</button>
+        <button id="ob-skip" class="btn">Look around first</button>
+        <button id="ob-next" class="btn primary">Next</button>
+      </div>
     </div>
   </div>
 

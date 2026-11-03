@@ -1,5 +1,5 @@
 import { CATEGORIES, ITEMS, ITEM_BY_ID, ROOM_PRESETS, LIGHT_TYPES, WALL_COLOURS, BUDGETS, SUPPLIER } from './catalog.js';
-import { footprint, scoreRoom, PRINCIPLE_TEXT, PRINCIPLE_LABEL } from './scoring.js';
+import { footprint, scoreRoom, PRINCIPLE_TEXT, PRINCIPLE_LABEL, STUDENTS } from './scoring.js';
 import {
   drawRoom, drawItem, drawFootprint, drawLighting, fitCamera, unproject, fromView,
   itemViewRect, boxHull,
@@ -76,7 +76,10 @@ function resize() {
   canvas.width = Math.round(r.width * dpr);
   canvas.height = Math.round(r.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  cam = fitCamera(room, view, r.width, r.height);
+  // Keep the room clear of the settings panel (top) and the round buttons / roster (bottom).
+  const set = $('.settings').getBoundingClientRect();
+  const top = set.height ? set.bottom - r.top + 4 : 0;
+  cam = fitCamera(room, view, r.width, r.height, top, 76);
   dirty = true;
 }
 
@@ -379,13 +382,18 @@ function drawTimer() {
   $('#timer').classList.toggle('low', timer.left <= 60);
   $('#start').textContent = timer.running ? 'Pause' : timer.left < BUILD_SECONDS ? 'Resume' : 'Start 10 min';
 }
+const TIMER_CALLS = { 300: '⏱️ 5 minutes left — check every student has a spot', 60: '⏱️ 1 minute left!', 10: '⏱️ 10 seconds…' };
 $('#start').addEventListener('click', () => {
   timer.running = !timer.running;
   clearInterval(timer.handle);
-  if (timer.running) timer.handle = setInterval(() => {
-    timer.left--; drawTimer();
-    if (timer.left <= 0) { clearInterval(timer.handle); timer.running = false; release(); }
-  }, 1000);
+  if (timer.running) {
+    toast(timer.left === BUILD_SECONDS ? '⏱️ 10 minutes — go! Students arrive when time’s up.' : '⏱️ Timer resumed');
+    timer.handle = setInterval(() => {
+      timer.left--; drawTimer();
+      if (TIMER_CALLS[timer.left]) toast(TIMER_CALLS[timer.left]);
+      if (timer.left <= 0) { clearInterval(timer.handle); timer.running = false; toast('⏰ Time’s up! Here come the students…'); release(); }
+    }, 1000);
+  } else toast('⏸️ Paused — tap Resume to keep building');
   drawTimer();
 });
 
@@ -516,10 +524,61 @@ function toast(msg) {
   clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2200);
 }
 
+// ---- onboarding -----------------------------------------------------------------
+
+const ONBOARD_KEY = 'nfspace.onboarded';
+const OB_STEPS = [
+  { icon: '🏫', title: 'Design a calm classroom', body: `
+    <p>Your job is to furnish a classroom where <b>every</b> student can learn well.</p>
+    <p>Four students with different needs will walk into your room and tell you how it feels.</p>` },
+  { icon: '✋', title: 'How to build', body: `
+    <ul class="ob-list">
+      <li><span class="i">👉</span><span>Drag furniture from the tray into the room, or tap an item to drop it in.</span></li>
+      <li><span class="i">✥</span><span>Drag anything in the room to move it. Green = fits, orange = blocked.</span></li>
+      <li><span class="i">⟳ ⧉ 🗑</span><span>Tap an item to rotate, copy or delete it.</span></li>
+      <li><span class="i">🤏</span><span>Pinch to zoom, drag the floor to pan. ⟲ ⟳ turn the room, ⤢ fits it to the screen.</span></li>
+    </ul>` },
+  { icon: '⏱️', title: 'You have 10 minutes', body: `
+    <ul class="ob-list">
+      <li><span class="i">▶️</span><span>Tap <b>Start 10 min</b> when you’re ready. The clock in the top bar counts down — you can pause it.</span></li>
+      <li><span class="i">💰</span><span>Keep an eye on the budget bar. Going over budget costs points.</span></li>
+      <li><span class="i">🚪</span><span>When time’s up, the students walk in automatically. Finished early? Tap <b>Release students</b>.</span></li>
+    </ul>` },
+  { icon: '🚶', title: 'Meet the students', body: () => `
+    <ul class="ob-list">${STUDENTS.map(s => `<li><span class="i">${s.emoji}</span><span><b>${s.name}</b> — ${s.trait.toLowerCase()}.</span></li>`).join('')}</ul>
+    <p>They’ll find a spot, say what they think, then you get a score for each student. Save your room to the Gallery from the report.</p>` },
+];
+let obStep = 0;
+
+function showOnboarding(step = 0) {
+  obStep = step;
+  const s = OB_STEPS[obStep], last = obStep === OB_STEPS.length - 1;
+  $('#ob-step').innerHTML = `<div class="ob-icon">${s.icon}</div><h2>${s.title}</h2>${typeof s.body === 'function' ? s.body() : s.body}`;
+  $('#ob-dots').innerHTML = OB_STEPS.map((_, i) => `<i class="${i === obStep ? 'on' : ''}"></i>`).join('');
+  $('#ob-back').hidden = obStep === 0;
+  $('#ob-skip').hidden = !last;
+  $('#ob-next').textContent = last ? (timer.left === BUILD_SECONDS && !timer.running ? 'Start the 10-minute timer' : 'Back to building') : 'Next';
+  $('#onboard').hidden = false;
+}
+function closeOnboarding() {
+  $('#onboard').hidden = true;
+  try { localStorage.setItem(ONBOARD_KEY, '1'); } catch {}
+}
+$('#ob-back').addEventListener('click', () => showOnboarding(obStep - 1));
+$('#ob-skip').addEventListener('click', closeOnboarding);
+$('#ob-next').addEventListener('click', () => {
+  if (obStep < OB_STEPS.length - 1) return showOnboarding(obStep + 1);
+  const startNow = timer.left === BUILD_SECONDS && !timer.running;
+  closeOnboarding();
+  if (startNow) $('#start').click();
+});
+$('#help').addEventListener('click', () => showOnboarding(0));
+
 // ---- boot ---------------------------------------------------------------------
 
 buildTray();
 updateHud();
 drawTimer();
+try { if (!localStorage.getItem(ONBOARD_KEY)) showOnboarding(0); } catch { showOnboarding(0); }
 new ResizeObserver(resize).observe(canvas);
 requestAnimationFrame(render);
