@@ -14,7 +14,9 @@
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
+/* Size to the visible screen: on iPad Safari 100% / 100vh runs under the toolbar. */
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { height: 100vh; height: -webkit-fill-available; height: 100dvh; position: fixed; inset: 0; width: 100%; }
 body {
   font-family: 'Figtree', system-ui, sans-serif;
   background: var(--eggshell);
@@ -105,12 +107,12 @@ body.dragging, body.dragging * { cursor: grabbing; }
 .settings select { min-height: 40px; border-radius: 8px; border: 1px solid var(--line); background: #fff; padding: 0 8px; }
 .slider input { width: 120px; height: 40px; accent-color: var(--cobalt-blue); }
 
-.viewctl { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 8px; }
+.viewctl { position: absolute; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
 .round {
   width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--cobalt-blue);
   background: #fff; color: var(--cobalt-blue); font-size: 1.5rem; font-weight: 700;
 }
-.filectl { position: absolute; left: 12px; bottom: 12px; display: flex; gap: 8px; }
+.filectl { position: absolute; left: 12px; bottom: max(12px, env(safe-area-inset-bottom)); display: flex; gap: 8px; }
 
 /* ---- release mode: students walk in, building is locked ---- */
 body.sim #tray { pointer-events: none; opacity: .45; }
