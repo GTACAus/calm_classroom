@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F9F6E7">
+  <title>GTAC Calm Classroom Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="modulepreload" href="js/catalog.js">
+  <link rel="modulepreload" href="js/scoring.js">
+  <link rel="modulepreload" href="js/iso.js">
+  <link rel="modulepreload" href="js/students.js">
+  <link rel="modulepreload" href="js/shapes.js">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="top">
+    <img src="img/gtac-logo.png" alt="GTAC" class="logo" width="93" height="34">
+    <h1>Calm Classroom Builder</h1>
+
+    <div class="budget" title="Spent / budget">
+      <div class="track"><div id="budget-fill"></div></div>
+      <span id="budget-text">$0 / $8,000</span>
+    </div>
+
+    <div class="timerbox">
+      <span id="timer">10:00</span>
+      <button id="start" class="btn">Start 10 min</button>
+    </div>
+    <button id="release" class="btn primary">Release students 🚪</button>
+  </header>
+
+  <main class="layout">
+    <aside id="tray">
+      <nav id="cats"></nav>
+      <div id="items"></div>
+      <p class="hint" id="credit"></p>
+    </aside>
+
+    <section class="stage-wrap">
+      <canvas id="stage"></canvas>
+
+      <div class="settings">
+        <label>Room <select id="preset"></select></label>
+        <label>Budget <select id="budget"></select></label>
+        <label>Walls <select id="wall"></select></label>
+        <label>Lights <select id="light-type"></select></label>
+        <label class="slider">💡 <input id="light-level" type="range" min="10" max="100" step="5"></label>
+      </div>
+
+      <div class="viewctl">
+        <button id="rot-l" class="round" aria-label="Rotate view left">⟲</button>
+        <button id="fit" class="round" aria-label="Fit room">⤢</button>
+        <button id="rot-r" class="round" aria-label="Rotate view right">⟳</button>
+      </div>
+
+      <div id="roster" hidden></div>
+
+      <div class="filectl">
+        <button id="gallery-btn" class="btn">Gallery</button>
+        <button id="new" class="btn">New</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="selbar" hidden>
+    <span class="nm"></span>
+    <button data-act="rotate" aria-label="Rotate">⟳</button>
+    <button data-act="copy" aria-label="Duplicate">⧉</button>
+    <button data-act="delete" aria-label="Delete">🗑</button>
+  </div>
+
+  <div id="report" class="modal" hidden>
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2>How did your students feel?</h2>
+        <button id="close-report" class="btn">Keep building</button>
+      </div>
+      <div id="report-body"></div>
+      <div class="savebar">
+        <input id="build-name" placeholder="Your name / team" maxlength="40">
+        <button id="save" class="btn primary">Save build</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gallery" class="modal" hidden>
+    <div class="sheet">
+      <div class="sheet-head"><h2>Saved builds</h2><button id="close-gallery" class="btn">Close</button></div>
+      <div id="gallery-list"></div>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+[Unit]
+Description=GTAC Calm Classroom Builder (renatatest.dunc.app)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/apps/sims
+ExecStart=/usr/bin/python3 server.py --port 8000
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
