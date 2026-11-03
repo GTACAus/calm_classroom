@@ -579,6 +579,10 @@ $('#help').addEventListener('click', () => showOnboarding(0));
 // iOS Safari ignores user-scalable=no: block its page pinch-zoom (the canvas has its own zoom).
 for (const ev of ['gesturestart', 'gesturechange', 'gestureend']) document.addEventListener(ev, e => e.preventDefault(), { passive: false });
 document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+// The room canvas runs on pointer events only, so cancelling its touch events stops Safari's
+// double-tap zoom there without affecting taps, drags or pinches.
+for (const ev of ['touchstart', 'touchend']) canvas.addEventListener(ev, e => e.preventDefault(), { passive: false });
+document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
 
 buildTray();
 updateHud();
